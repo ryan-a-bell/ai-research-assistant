@@ -1,5 +1,7 @@
 import { config, homepage } from "../../package.json"
 import { getString } from "../utils/locale"
+import { PROVIDERS, getProviderBaseUrl, getProviderModels } from "../config/providers"
+import { setPref } from "../utils/prefs"
 
 export function registerPrefs() {
   Zotero.PreferencePanes.register({
@@ -89,111 +91,142 @@ async function updatePrefsUI() {
 }
 
 function bindPrefEvents() {
-  // addon.data
-  //   .prefs!.window.document.querySelector(`#zotero-prefpane-${config.addonRef}-enable`)
-  //   ?.addEventListener('command', e => {
-  //     ztoolkit.log(e)
-  //     addon.data.prefs!.window.alert(`Successfully changed to ${(e.target as XUL.Checkbox).checked}!`)
-  //   })
-  // addon.data
-  //   .prefs!!.window.document.querySelector(`#zotero-prefpane-${config.addonRef}-input`)
-  //   ?.addEventListener('change', e => {
-  //     ztoolkit.log(e)
-  //     addon.data.prefs!.window.alert(`Successfully changed to ${(e.target as HTMLInputElement).value}!`)
-  //   })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-OPENAI_MODEL-0`,
+  const doc = addon.data.prefs!!.window.document
+
+  // Provider dropdown change handler
+  const providerDropdown = doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-PROVIDER`,
+  ) as XUL.MenuList
+
+  // Initialize popular models dropdown based on current provider
+  const currentProvider = Zotero.Prefs.get(`${config.addonRef}.PROVIDER`) as string || 'openai'
+  updatePopularModelsDropdown(currentProvider)
+
+  providerDropdown?.addEventListener("command", (e) => {
+    const selectedProvider = (e.target as XUL.MenuList).value
+    const baseUrl = getProviderBaseUrl(selectedProvider)
+
+    // Auto-update base URL
+    if (baseUrl) {
+      const baseUrlInput = doc.querySelector(
+        `#zotero-prefpane-${config.addonRef}-OPENAI_BASE_URL`,
+      ) as HTMLInputElement
+      if (baseUrlInput) {
+        baseUrlInput.value = baseUrl
+        setPref("OPENAI_BASE_URL", baseUrl)
+      }
+    }
+
+    // Update popular models dropdown
+    updatePopularModelsDropdown(selectedProvider)
+
+    addon.data.prefs!.window.alert(
+      `Please restart Zotero for your new provider settings to take effect.`,
     )
-    ?.addEventListener("command", (e) => {
+  })
+
+  // Popular models dropdown change handler
+  const popularModelsDropdown = doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-POPULAR_MODELS`,
+  ) as XUL.MenuList
+
+  popularModelsDropdown?.addEventListener("command", (e) => {
+    const selectedModel = (e.target as XUL.MenuList).value
+    if (selectedModel) {
+      const modelInput = doc.querySelector(
+        `#zotero-prefpane-${config.addonRef}-OPENAI_MODEL`,
+      ) as HTMLInputElement
+      if (modelInput) {
+        modelInput.value = selectedModel
+        setPref("OPENAI_MODEL", selectedModel)
+      }
       addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new OPENAI Model to take effect.`,
+        `Please restart Zotero for your new model to take effect.`,
       )
-    })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-OPENAI_MODEL-1`,
+    }
+  })
+
+  // Model text input change handler
+  doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-OPENAI_MODEL`,
+  )?.addEventListener("change", (e) => {
+    addon.data.prefs!.window.alert(
+      `Please restart Zotero for your new model to take effect.`,
     )
-    ?.addEventListener("command", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new OPENAI Model to take effect.`,
-      )
-    })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-OPENAI_MODEL-2`,
+  })
+
+  // Base URL change handler
+  doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-OPENAI_BASE_URL`,
+  )?.addEventListener("change", (e) => {
+    addon.data.prefs!.window.alert(
+      `Please restart Zotero for your new base URL to take effect.`,
     )
-    ?.addEventListener("command", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new OPENAI Model to take effect.`,
-      )
-    })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-OPENAI_MODEL-3`,
+  })
+
+  // API Key change handler
+  doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-OPENAI_API_KEY`,
+  )?.addEventListener("change", (e) => {
+    addon.data.prefs!.window.alert(
+      `Please restart Zotero for your new API key to take effect.`,
     )
-    ?.addEventListener("command", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new OPENAI Model to take effect.`,
-      )
-    })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-OPENAI_BASE_URL`,
+  })
+
+  // Shortcut modifier handlers
+  doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-SHORTCUT_MODIFIER-shift`,
+  )?.addEventListener("command", (e) => {
+    addon.data.prefs!.window.alert(
+      `Please restart Zotero for your new shortcut combo to take effect.`,
     )
-    ?.addEventListener("change", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new OPENAI Base URL to take effect.`,
-      )
-    })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-SHORTCUT_MODIFIER-shift`,
+  })
+
+  doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-SHORTCUT_MODIFIER-ctrl-shift`,
+  )?.addEventListener("command", (e) => {
+    addon.data.prefs!.window.alert(
+      `Please restart Zotero for your new shortcut combo to take effect.`,
     )
-    ?.addEventListener("command", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new shortcut combo to take effect.`,
-      )
-    })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-SHORTCUT_MODIFIER-ctrl-shift`,
+  })
+
+  doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-SHORTCUT_MODIFIER-alt-shift`,
+  )?.addEventListener("command", (e) => {
+    addon.data.prefs!.window.alert(
+      `Please restart Zotero for your new shortcut combo to take effect.`,
     )
-    ?.addEventListener("command", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new shortcut combo to take effect.`,
-      )
-    })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-SHORTCUT_MODIFIER-alt-shift`,
+  })
+
+  // Shortcut key handler
+  doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-SHORTCUT_KEY`,
+  )?.addEventListener("change", (e) => {
+    addon.data.prefs!.window.alert(
+      `Please restart Zotero for your new shortcut combo to take effect.`,
     )
-    ?.addEventListener("command", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new shortcut combo to take effect.`,
-      )
-    })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-SHORTCUT_KEY`,
-    )
-    ?.addEventListener("change", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new shortcut combo to take effect.`,
-      )
-    })
-  // addon.data
-  //   .prefs!!.window.document.querySelector(`#zotero-prefpane-${config.addonRef}-OPENAI_MODEL-2`)
-  //   ?.addEventListener('command', e => {
-  //     addon.data.prefs!.window.alert(`Please restart Zotero for your new OPENAI Model to take effect.`)
-  //   })
-  addon.data
-    .prefs!!.window.document.querySelector(
-      `#zotero-prefpane-${config.addonRef}-OPENAI_API_KEY`,
-    )
-    ?.addEventListener("change", (e) => {
-      addon.data.prefs!.window.alert(
-        `Please restart Zotero for your new OPENAI API Key to take effect.`,
-      )
-    })
+  })
+}
+
+function updatePopularModelsDropdown(provider: string) {
+  const doc = addon.data.prefs!!.window.document
+  const popularModelsPopup = doc.querySelector(
+    `#zotero-prefpane-${config.addonRef}-POPULAR_MODELS-popup`,
+  ) as XUL.MenuPopup
+
+  if (!popularModelsPopup) return
+
+  // Clear existing items except the first placeholder
+  while (popularModelsPopup.childNodes.length > 1) {
+    popularModelsPopup.removeChild(popularModelsPopup.lastChild!)
+  }
+
+  // Add popular models for the selected provider
+  const models = getProviderModels(provider)
+  models.forEach((model) => {
+    const menuitem = doc.createXULElement("menuitem")
+    menuitem.setAttribute("label", model)
+    menuitem.setAttribute("value", model)
+    popularModelsPopup.appendChild(menuitem)
+  })
 }

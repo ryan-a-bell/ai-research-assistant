@@ -1,6 +1,7 @@
 pref("extensions.zotero.__addonRef__.enable", true)
 pref("extensions.zotero.__addonRef__.input", "This is input")
-pref("extensions.zotero.__addonRef__.OPENAI_MODEL", "gpt-4-0613")
+pref("extensions.zotero.__addonRef__.PROVIDER", "openai")
+pref("extensions.zotero.__addonRef__.OPENAI_MODEL", "gpt-4o")
 pref("extensions.zotero.__addonRef__.OPENAI_API_KEY", "YOUR_OPENAI_API_KEY")
 pref("extensions.zotero.__addonRef__.FEEDBACK_NO_CONFIRMATION", false)
 pref("extensions.zotero.__addonRef__.USER_EMAIL", "")
