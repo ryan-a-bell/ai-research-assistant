@@ -3,6 +3,7 @@ export interface ProviderConfig {
   baseUrl: string;
   popularModels: string[];
   requiresPrefix?: boolean;
+  isLocal?: boolean;
 }
 
 export const PROVIDERS: Record<string, ProviderConfig> = {
@@ -30,6 +31,42 @@ export const PROVIDERS: Record<string, ProviderConfig> = {
       'mistralai/mistral-large',
     ],
     requiresPrefix: true,
+  },
+  gemini: {
+    name: 'Google Gemini',
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
+    popularModels: [
+      'gemini-1.5-pro',
+      'gemini-1.5-flash',
+      'gemini-pro',
+      'gemini-pro-vision',
+    ],
+  },
+  ollama: {
+    name: 'Ollama (Local)',
+    baseUrl: 'http://localhost:11434/v1',
+    popularModels: [
+      'llama3.1:70b',
+      'llama3.1:8b',
+      'mistral:7b',
+      'mixtral:8x7b',
+      'qwen2.5:72b',
+      'codellama:13b',
+      'phi3:medium',
+      'deepseek-coder:6.7b',
+    ],
+    isLocal: true,
+  },
+  lmstudio: {
+    name: 'LM Studio (Local)',
+    baseUrl: 'http://localhost:1234/v1',
+    popularModels: [
+      'local-model',
+      'llama-3.1-8b',
+      'mistral-7b',
+      'phi-3-mini',
+    ],
+    isLocal: true,
   },
   custom: {
     name: 'Custom',
