@@ -173,7 +173,7 @@ async function createNote({
   results,
 }: any) {
   const resultIds: string[] = results.map(({ item }: any) => item.id)
-  const csl = Zotero.Styles.get(DEFAULT_BIB_STYLE).getCiteProc()
+  const csl = (Zotero as any).Styles.get(DEFAULT_BIB_STYLE).getCiteProc()
   csl.updateItems(resultIds)
   const bibs = csl.makeBibliography()[1]
   const resultItems = await Zotero.Items.getAsync(resultIds)

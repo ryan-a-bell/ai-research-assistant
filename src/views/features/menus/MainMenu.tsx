@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Bars3Icon } from "@heroicons/react/24/outline"
 import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/20/solid"
-import { LegacyResearchAssistant } from "../../../models/legacyAssistant"
 import { useDialog } from "../../../hooks/useDialog"
 import { DropdownMenu } from "../../components/navigations/DropdownMenu"
 import { Confirmation } from "../../components/navigations/Confirmation"
@@ -44,7 +43,7 @@ function ScaleButtonGroup({
 
 interface MenuProps {
   containerRef: React.RefObject<HTMLDivElement>
-  resetMemory: LegacyResearchAssistant["resetMemory"]
+  resetMemory: () => void
   clearMessages: () => void
   messages: Message[]
   zoom: ReturnType<typeof useZoom>

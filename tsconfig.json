@@ -15,6 +15,13 @@
   ],
   "exclude": [
     "builds",
-    "addon"
+    "addon",
+    "src/models/agents",
+    "src/models/chains",
+    "src/models/tools",
+    "src/models/vectorstore",
+    "src/models/legacyAssistant.ts",
+    "src/models/utils/lcParsers.ts",
+    "src/models/utils/memory.ts"
   ]
 }

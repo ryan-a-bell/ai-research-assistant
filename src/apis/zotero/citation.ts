@@ -6,7 +6,7 @@ export async function createCitations(
   itemIds: number[],
   style = DEFAULT_BIB_STYLE,
 ) {
-  const csl = Zotero.Styles.get(style).getCiteProc()
+  const csl = (Zotero as any).Styles.get(style).getCiteProc()
   csl.updateItems(itemIds)
   const bibs = csl.makeBibliography()[1]
   const items = await Promise.all(

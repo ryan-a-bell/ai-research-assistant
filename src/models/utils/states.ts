@@ -1,5 +1,27 @@
-import { StateName, States, SimplifiedStates } from '../../typings/input'
+import {
+  StateName,
+  States,
+  SimplifiedStates,
+  SelectedCreator,
+  SelectedTag,
+  SelectedItem,
+  SelectedCollection,
+  StateSelection,
+  StateSelections
+} from '../../typings/input'
 import { states as log } from '../../utils/loggers'
+
+export type {
+  States,
+  StateName,
+  SimplifiedStates,
+  SelectedCreator,
+  SelectedTag,
+  SelectedItem,
+  SelectedCollection,
+  StateSelection,
+  StateSelections
+}
 
 export function simplifyStates(states: States): SimplifiedStates {
   const simplifiedStates = {

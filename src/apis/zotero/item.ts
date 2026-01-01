@@ -2,6 +2,8 @@ import { zotero as log } from "../../utils/loggers"
 import { FileForIndexing } from "../../typings/files"
 import { ItemMode, ItemInfo, AttachmentInfo } from "../../typings/zotero"
 
+export type { ItemInfo }
+
 export function compileItemInfo(item: Zotero.Item, mode: ItemMode): ItemInfo {
   let itemInfo: ItemInfo = {
     id: item.id,
