@@ -7,7 +7,7 @@ export const customMarkdownRenderer = {
       const [type, id] = href.slice(13).split("/")
       return (
         <ItemButton
-          item={{ type: type as Zotero.Item.ItemType, id: parseInt(id) }}
+          item={{ type: type as _ZoteroTypes.Item.ItemType, id: parseInt(id) }}
           mode="item"
           text={content as string}
         />

@@ -6,8 +6,8 @@ import { ItemMode, ItemInfo } from "../../typings/zotero"
 import { QueryType } from "../../typings/actions"
 
 export interface SearchCondition {
-  condition: Zotero.Search.Conditions
-  operator: Zotero.Search.Operator
+  condition: _ZoteroTypes.Search.Conditions
+  operator: _ZoteroTypes.Search.Operator
   value?: string
 }
 
