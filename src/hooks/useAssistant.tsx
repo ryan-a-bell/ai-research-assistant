@@ -26,7 +26,7 @@ export const AssistantContextProvider: React.FC<AssistantProviderProps> = ({
           file: getPref("ASSISTANT_FILE") as string,
         },
         models: {
-          default: "gpt-4o",
+          default: (getPref("OPENAI_MODEL") as string) || "gpt-4o",
         },
         messageStore: addon.data.popup.messageStore,
       }),

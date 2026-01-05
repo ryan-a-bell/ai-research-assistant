@@ -48,8 +48,12 @@ export class ResearchAssistant {
   constructor({ assistants, models }: ResearchAssistantFields) {
     this.assistants = assistants
     this.models = models
+    const apiKey = getPref("OPENAI_API_KEY") as string
+    const baseUrl = getPref("OPENAI_BASE_URL") as string
     this.openai = new OpenAI({
-      apiKey: getPref("OPENAI_API_KEY") as string,
+      apiKey: apiKey || "dummy",
+      baseURL: baseUrl,
+      dangerouslyAllowBrowser: true,
     })
   }
 
