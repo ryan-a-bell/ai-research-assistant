@@ -34,7 +34,7 @@ export const PROVIDERS: Record<string, ProviderConfig> = {
   },
   gemini: {
     name: 'Google Gemini',
-    baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai',
     popularModels: [
       'gemini-1.5-pro',
       'gemini-1.5-flash',
